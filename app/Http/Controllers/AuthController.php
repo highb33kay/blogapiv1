@@ -43,6 +43,15 @@ class AuthController extends Controller
 		// Hash the password before saving it to the database
 		$user->password = Hash::make($request->password);
 
+		// update the user role to default user
+
+		// check if role is set in the request
+		if ($request->role) {
+			$user->role = $request->role;
+		} else {
+			$user->role = 'user';
+		}
+
 		$user->save();
 
 		// Create a token for the user
@@ -99,6 +108,7 @@ class AuthController extends Controller
 			'data' => [
 				'token' => $token,
 				'token_type' => 'Bearer',
+				'role' => $user->role,
 			],
 		], 200);
 	}

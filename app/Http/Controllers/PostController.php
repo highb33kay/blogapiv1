@@ -24,20 +24,28 @@ class PostController extends Controller
 
 	public function show($id)
 	{
-		// Return a single post
-		$post = Post::find($id);
-		
-		if (!$post) {
+		try {
+			// Return a single post
+			$post = Post::find($id);
+			
+			if (!$post) {
+				return response()->json([
+					'success' => false,
+					'message' => 'Post not found',
+				], 400);
+			}
+			
+			return response()->json([
+				'success' => true,
+				'data' => $post,
+			], 200);
+		} catch (\Exception $e) {
+			//throw $th;
 			return response()->json([
 				'success' => false,
-				'message' => 'Post not found',
+				'message' => $e->getMessage(),
 			], 400);
 		}
-		
-		return response()->json([
-			'success' => true,
-			'data' => $post,
-		], 200);
 	}
 
 	public function store(Request $request)
@@ -45,34 +53,34 @@ class PostController extends Controller
 		$postId = Str::uuid();
 		
 		try {
-			// Validate request
-        $validator = Validator::make($request->all(), [
-            'title' => 'required|string',
-            'content' => 'required|string',
-        ]);
+				// Validate request
+			$validator = Validator::make($request->all(), [
+				'title' => 'required|string',
+				'content' => 'required|string',
+			]);
 
-        if ($validator->fails()) {
-            return response()->json(['error' => $validator->errors()], 400);
-        }
-		
-		// Store a new post
-		$post = new Post();
-		$post->id = $postId;
-		$post->title = $request->title;
-		$post->content = $request->content;
-		$post->published_at = now();
+			if ($validator->fails()) {
+				return response()->json(['error' => $validator->errors()], 400);
+			}
+			
+			// Store a new post
+			$post = new Post();
+			$post->id = $postId;
+			$post->title = $request->title;
+			$post->content = $request->content;
+			$post->published_at = now();
 
-// Associate the post with the authenticated user
-        $user = Auth::user();
-        $post->user()->associate($user);
+	// Associate the post with the authenticated user
+			$user = Auth::user();
+			$post->user()->associate($user);
 
-		$post->save();
-		
-		return response()->json([
-			'success' => true,
-			'data' => $post,
-			'message' => 'Post created successfully',
-		], 200);
+			$post->save();
+			
+			return response()->json([
+				'success' => true,
+				'data' => $post,
+				'message' => 'Post created successfully',
+			], 201);
 		} catch (\Exception $e) {
 			//throw $th;
 			return response()->json([
@@ -86,70 +94,86 @@ class PostController extends Controller
 	// Update a post
 	public function update(Request $request, $id)
     {
-        // Validate request
-        $validator = Validator::make($request->all(), [
-            'title' => 'required|string',
-            'content' => 'required|string',
-        ]);
+		try {
+			// Validate request
+			$validator = Validator::make($request->all(), [
+				'title' => 'required|string',
+				'content' => 'required|string',
+			]);
 
-        if ($validator->fails()) {
-            return response()->json(['error' => $validator->errors()], 400);
-        }
+			if ($validator->fails()) {
+				return response()->json(['error' => $validator->errors()], 400);
+			}
 
-        // Update a post only if the authenticated user is the owner
-        $post = Post::find($id);
+			// Update a post only if the authenticated user is the owner or an admin
+			$post = Post::find($id);
 
-        if (!$post) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Post not found',
-            ], 400);
-        }
+			if (!$post) {
+				return response()->json([
+					'success' => false,
+					'message' => 'Post not found',
+				], 400);
+			}
 
-        // Check if the authenticated user is the owner of the post
-        if ($post->user_id !== Auth::id()) {
-            return response()->json([
-                'success' => false,
-                'message' => 'You do not have permission to update this post',
-            ], 403);
-        }
+			// Check if the authenticated user is the owner of the post
+			if ($post->user_id !== Auth::id() || Auth::user()->role !== 'admin') {
+				return response()->json([
+					'success' => false,
+					'message' => 'You do not have permission to update this post',
+				], 403);
+			}
 
-        $post->title = $request->title;
-        $post->content = $request->content;
-        $post->updated_at = now();
-        $post->save();
+			$post->title = $request->title;
+			$post->content = $request->content;
+			$post->updated_at = now();
+			$post->save();
 
-        return response()->json([
-            'success' => true,
-            'data' => $post,
-        ], 200);
+			return response()->json([
+				'success' => true,
+				'data' => $post,
+			], 200);
+		} catch (\Exception $e) {
+			//throw $th;
+			return response()->json([
+				'success' => false,
+				'message' => $e->getMessage(),
+			], 400);
+		}
     }
 
 	public function destroy($id)
     {
-        // Delete a post only if the authenticated user is the owner
-        $post = Post::find($id);
+		try {
+			// Delete a post only if the authenticated user is the owner
+			$post = Post::find($id);
 
-        if (!$post) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Post not found',
-            ], 400);
-        }
+			if (!$post) {
+				return response()->json([
+					'success' => false,
+					'message' => 'Post not found',
+				], 400);
+			}
 
-        // Check if the authenticated user is the owner of the post
-        if ($post->user_id !== Auth::id()) {
-            return response()->json([
-                'success' => false,
-                'message' => 'You do not have permission to delete this post',
-            ], 403);
-        }
+			// Check if the authenticated user is the owner of the post
+			if ($post->user_id !== Auth::id() || Auth::user()->role !== 'admin') {
+				return response()->json([
+					'success' => false,
+					'message' => 'You do not have permission to delete this post',
+				], 403);
+			}
 
-        $post->delete();
+			$post->delete();
 
-        return response()->json([
-            'success' => true,
-            'message' => 'Post deleted successfully',
-        ], 204);
+			return response()->json([
+				'success' => true,
+				'message' => 'Post deleted successfully',
+			], 204);
+		} catch (\Exception $e) {
+			//throw $th;
+			return response()->json([
+				'success' => false,
+				'message' => $e->getMessage(),
+			], 400);
+		}
     }
 }
