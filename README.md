@@ -4,6 +4,8 @@
 
 This is a simple blogging platform built with Laravel, where users can register, log in, create, edit, and delete blog posts.
 
+I switched Repos Midway through due to a hosting test. Old Repo: https://github.com/highb33kay/blogapi
+
 ## Getting Started
 
 Follow the instructions below to set up and run the Laravel Blog API on your local machine.
@@ -81,7 +83,7 @@ The API uses Laravel Sanctum for authentication. Sanctum provides a simple and c
 
 #### Users Table
 
-The 'users' table stores user information, including a unique UUID identifier, name, email, password, and timestamps. UUIDs are used as primary keys to enhance security and prevent enumeration attacks.
+The 'users' table stores user information, including a unique UUID identifier, name, email, password, role and timestamps. UUIDs are used as primary keys to enhance security and prevent enumeration attacks. All passwords are hashed and protected. Roles include, Admin and User. 
 
 #### Posts Table
 
@@ -91,11 +93,15 @@ The 'posts' table stores blog posts, utilizing a UUID identifier as the primary 
 
 #### Registration and Login
 
-The registration and login endpoints follow industry-standard practices. Users register by providing a name, email, and password. Authentication is achieved through the issuance of Bearer tokens, which are included in subsequent requests.
+The registration and login endpoints follow industry-standard practices. Users register by providing a name, email, password, and an optional role for Admin Signups. Authentication is achieved through the issuance of Bearer tokens, which are included in subsequent requests.
 
 #### Post Creation and Retrieval
 
-Creating a post requires a user to be authenticated. Each post is associated with the authenticated user, ensuring that posts are linked to their respective creators. Posts can be retrieved individually or as a collection.
+Creating a post requires a user to be authenticated. Each post is associated with the authenticated user, ensuring that posts are linked to their respective creators.
+
+#### Post Updating and Deletion
+
+A created post can be deleted or updated by passing the UUID identifier to the controller. A user can only delete or update a post that is linked to them. An Admin can delete or update all posts regardless of ownership.
 
 ### Error Handling
 
