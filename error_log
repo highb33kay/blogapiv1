@@ -1,0 +1,7 @@
+[14-Dec-2023 14:21:44 UTC] PHP Warning:  require(/home/anchtdwz/blogapi/blogapi/vendor/autoload.php): failed to open stream: No such file or directory in /home/anchtdwz/blogapi/index.php on line 34
+[14-Dec-2023 14:21:44 UTC] PHP Fatal error:  require(): Failed opening required '/home/anchtdwz/blogapi/blogapi/vendor/autoload.php' (include_path='.:/opt/alt/php74/usr/share/pear') in /home/anchtdwz/blogapi/index.php on line 34
+[14-Dec-2023 14:21:49 UTC] PHP Warning:  require(/home/anchtdwz/blogapi/blogapi/vendor/autoload.php): failed to open stream: No such file or directory in /home/anchtdwz/blogapi/index.php on line 34
+[14-Dec-2023 14:21:49 UTC] PHP Fatal error:  require(): Failed opening required '/home/anchtdwz/blogapi/blogapi/vendor/autoload.php' (include_path='.:/opt/alt/php74/usr/share/pear') in /home/anchtdwz/blogapi/index.php on line 34
+[14-Dec-2023 14:21:51 UTC] PHP Warning:  require(/home/anchtdwz/blogapi/blogapi/vendor/autoload.php): failed to open stream: No such file or directory in /home/anchtdwz/blogapi/index.php on line 34
+[14-Dec-2023 14:21:51 UTC] PHP Fatal error:  require(): Failed opening required '/home/anchtdwz/blogapi/blogapi/vendor/autoload.php' (include_path='.:/opt/alt/php74/usr/share/pear') in /home/anchtdwz/blogapi/index.php on line 34
+[14-Dec-2023 14:22:36 UTC] PHP Fatal error:  Composer detected issues in your platform: Your Composer dependencies require a PHP version ">= 8.1.0". You are running 7.4.33. in /home/anchtdwz/blogapi/vendor/composer/platform_check.php on line 24
