@@ -43,8 +43,6 @@ class AuthController extends Controller
 		// Hash the password before saving it to the database
 		$user->password = Hash::make($request->password);
 
-		// update the user role to default user
-
 		// check if role is set in the request
 		if ($request->role) {
 			$user->role = $request->role;
@@ -132,6 +130,18 @@ class AuthController extends Controller
 		return response()->json([
 			'success' => true,
 			'data' => $request->user(),
+		], 200);
+	}
+
+	// Get all users
+	public function users(Request $request)
+	{
+		// Get all users
+		$users = User::all();
+
+		return response()->json([
+			'success' => true,
+			'data' => $users,
 		], 200);
 	}
 
